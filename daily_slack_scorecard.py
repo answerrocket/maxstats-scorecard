@@ -37,7 +37,7 @@ def daily_slack_scorecard(parameters: SkillInput) -> SkillOutput:
     for tenant in response_Ids:
         chat_id = response_Ids[tenant]
         message = f"Updated {tenant} Max product scorecard: https://maxstats-test.prod.answerrocket.com/apps/chat/chat-queries/{chat_id}"
-        # send_slack_message(message, slack_webhook_url)
+        send_slack_message(message, slack_webhook_url)
 
     return SkillOutput(narrative="Scorecard reports have been generated and sent to Slack.")
         
