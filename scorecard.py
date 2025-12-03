@@ -42,7 +42,7 @@ with open(CHART_TEMPLATE_PATH, 'r') as f:
         )
     ]
 )
-def scorecard(parameters: SkillInput):
+def scorecard(parameters: SkillInput) -> SkillOutput:
     print(f"Skill received parameters: {parameters.arguments}")
 
     # Get parameters

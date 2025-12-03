@@ -1,0 +1,169 @@
+{
+  "type": "Document",
+  "rows": 90,
+  "columns": 160,
+  "rowHeight": "1.11%",
+  "colWidth": "0.625%",
+  "gap": "0px",
+  "style": {
+    "backgroundColor": "#ffffff",
+    "width": "100%",
+    "height": "100%"
+  },
+  "children": [
+    {
+      "name": "Header0",
+      "type": "Header",
+      "text": "{{title}}",
+      "style": {
+        "fontSize": "22px",
+        "fontWeight": "bold",
+        "textAlign": "left",
+        "verticalAlign": "start",
+        "color": "#000000",
+        "backgroundColor": "#ffffff",
+        "border": "none",
+        "textDecoration": "none",
+        "writingMode": "horizontal-tb"
+      },
+      "parentId": "FlexContainer0",
+      "flex": ""
+    },
+    {% if subtitle %}
+    {
+      "name": "Subtitle0",
+      "type": "Header",
+      "text": "{{subtitle}}",
+      "style": {
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "textAlign": "left",
+        "verticalAlign": "start",
+        "color": "#666666",
+        "backgroundColor": "#ffffff",
+        "border": "none",
+        "textDecoration": "none",
+        "writingMode": "horizontal-tb"
+      },
+      "parentId": "FlexContainer0",
+      "flex": ""
+    },
+    {% endif %}
+    {% if warnings %}
+    {
+      "name": "Warning0",
+      "type": "Header",
+      "text": "{{warnings}}",
+      "style": {
+        "fontSize": "13px",
+        "fontWeight": "normal",
+        "textAlign": "left",
+        "verticalAlign": "start",
+        "color": "#666666",
+        "backgroundColor": "#FFF8E1",
+        "border": "none",
+        "borderRadius": "10px",
+        "padding": "8px 12px",
+        "textDecoration": "none",
+        "writingMode": "horizontal-tb"
+      },
+      "parentId": "FlexContainer0",
+      "flex": ""
+    },
+    {% endif %}
+    {
+      "name": "FlexContainer0",
+      "type": "FlexContainer",
+      "row": 1,
+      "column": 1,
+      "width": 160,
+      "height": {{height}},
+      "minHeight": "250px",
+      "rows": {% if warnings %}{{ 3 }}{% else %}{{ 2 }}{% endif %},
+      "columns": 1,
+      "direction": "column"
+    },
+    {
+      "name": "HighchartsChart0",
+      "type": "HighchartsChart",
+      "row": null,
+      "column": null,
+      "width": null,
+      "height": null,
+      "minHeight": "400px",
+      "options": {
+        "chart": {
+          "type": "spline"
+        },
+        "title": {
+          "text": "{{chart_title}}",
+          "style": {
+            "fontSize": "18px"
+          }
+        },
+        "xAxis": {
+          "categories": {{ dates | tojson }},
+          "title": {
+            "text": "Date"
+          },
+          "accessibility": {
+            "description": "Date"
+          }
+        },
+        "yAxis": [{
+          "title": {
+            "text": "Active Users"
+          },
+          "labels": {
+            "format": "{value}"
+          }
+        }, {
+          "title": {
+            "text": "Total Questions"
+          },
+          "labels": {
+            "format": "{value}"
+          },
+          "opposite": true
+        }],
+        "tooltip": {
+          "crosshairs": true,
+          "shared": true
+        },
+        "plotOptions": {
+          "spline": {
+            "marker": {
+              "radius": 4,
+              "lineColor": "#666666",
+              "lineWidth": 1
+            }
+          }
+        },
+        "series": [{
+          "name": "Unique Users",
+          "marker": {
+            "symbol": "circle"
+          },
+          "data": {{ unique_users | tojson }}
+        }, {
+          "name": "Total Questions",
+          "yAxis": 1,
+          "marker": {
+            "symbol": "square"
+          },
+          "data": {{ total_questions | tojson }}
+        }],
+        "credits": {
+          "enabled": false
+        },
+        "legend": {
+          "enabled": true,
+          "align": "center",
+          "verticalAlign": "bottom",
+          "layout": "horizontal"
+        }
+      },
+      "parentId": "FlexContainer0"
+    }
+  ]
+}
