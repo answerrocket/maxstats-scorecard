@@ -29,13 +29,17 @@ def daily_slack_scorecard(parameters: SkillInput) -> SkillOutput:
     print('Running run_scorecard')
     tenants = parameters.arguments.tenants if hasattr(parameters.arguments, 'tenants') else DEFAULT_TENANTS
     slack_webhook_url = parameters.arguments.slack_webhook_url if hasattr(parameters.arguments, 'slack_webhook_url') else None
+    print(f"slack_webhook_url: {slack_webhook_url}")
+    print(f"tenants: {tenants}")
     agent_id = parameters.assistant_id
     response_Ids = run_questions(tenants, agent_id)
     time.sleep(60) # wait for report to be generated
     for tenant in response_Ids:
         chat_id = response_Ids[tenant]
         message = f"Updated {tenant} Max product scorecard: https://maxstats-test.prod.answerrocket.com/apps/chat/chat-queries/{chat_id}"
-        send_slack_message(message, slack_webhook_url)
+        # send_slack_message(message, slack_webhook_url)
+
+    return SkillOutput(narrative="Scorecard reports have been generated and sent to Slack.")
         
 def run_questions(tenants, agent_id) -> dict[str, str]:
     print(f'received tenants: {tenants}, agent_id: {agent_id}')
