@@ -32,11 +32,11 @@ def daily_slack_scorecard(parameters: SkillInput) -> SkillOutput:
     print(f"slack_webhook_url: {slack_webhook_url}")
     print(f"tenants: {tenants}")
     agent_id = parameters.assistant_id
-    response_Ids = run_questions(tenants, agent_id)
+    share_links = run_questions(tenants, agent_id)
     time.sleep(60) # wait for report to be generated
-    for tenant in response_Ids:
-        chat_id = response_Ids[tenant]
-        message = f"Updated {tenant} Max product scorecard: https://maxstats-test.prod.answerrocket.com/apps/chat/chat-queries/{chat_id}"
+    for tenant in share_links:
+        share_link = share_links[tenant]
+        message = f"Updated {tenant} Max product scorecard: {share_link}"
         send_slack_message(message, slack_webhook_url)
 
     return SkillOutput(narrative="Scorecard reports have been generated and sent to Slack.")
@@ -50,22 +50,26 @@ def run_questions(tenants, agent_id) -> dict[str, str]:
     # Initialize AnswerRocket client
     arc = AnswerRocketClient()
 
-    response_Ids = {}
+    share_links = {}
     # Loop through tenants and send questions
     for tenant in tenants:
         thread = arc.chat.create_new_thread(copilot_id=agent_id)
         question = f"Today is {date_str}. Run Max Report for tenant {tenant}"
         response = arc.chat.queue_chat_question(thread_id=thread.id, question=question, skip_cache=True)
-        response_Ids[tenant] = response.id
+        thread_id = response.thread_id
+        share_object = arc.chat.share_chat_thread(original_thread_id=thread_id)
+        share_links[tenant] = share_object.link_to_shared_thread
 
     # Run report on all tenants
     if len(tenants) > 1:
         thread = arc.chat.create_new_thread(copilot_id=agent_id)
         question = f"Today is {date_str}. Run Max Report for all tenants: {', '.join(tenants)}. Analyze all of them into one report. Do not run multi-skills"
         response = arc.chat.queue_chat_question(thread_id=thread.id, question=question, skip_cache=True)
-        response_Ids['All'] = response.id
+        thread_id = response.thread_id
+        share_object = arc.chat.share_chat_thread(original_thread_id=thread_id)
+        share_links['All'] = share_object.link_to_shared_thread
 
-    return response_Ids
+    return share_links
 
 def send_slack_message(message: str, slack_webhook_url: str):
     if not slack_webhook_url:
