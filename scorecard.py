@@ -95,6 +95,7 @@ def scorecard(parameters: SkillInput) -> SkillOutput:
     rolling_90: {rolling_90}
     rolling_7: {rolling_7}
     """
+    print('visualizations: ', visualizations)
 
     return SkillOutput(
         visualizations=visualizations,
