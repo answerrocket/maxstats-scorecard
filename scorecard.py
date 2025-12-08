@@ -95,7 +95,11 @@ def scorecard(parameters: SkillInput) -> SkillOutput:
     rolling_90: {rolling_90}
     rolling_7: {rolling_7}
     """
-    print('visualizations: ', visualizations)
+    viz_contents = []
+    for visualization in visualizations:
+        viz_content = visualization.layout
+        viz_contents.append(json.loads(viz_content))
+    print('viz_contents: ', json.dumps(viz_contents, indent=2))
 
     return SkillOutput(
         visualizations=visualizations,
